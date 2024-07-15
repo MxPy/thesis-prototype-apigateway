@@ -1,10 +1,13 @@
-from fastapi import FastAPI, status, Request, Response
+from fastapi import FastAPI, status, Request, Response, Header , Depends
 from conf import settings
+from typing import Annotated
 from core import route
 import uvicorn
+from fastapi.security import HTTPBearer
 from schemas.users import *
 
 app = FastAPI()
+security = HTTPBearer()
 
 @app.get("/test")
 async def read_root():
@@ -33,6 +36,17 @@ async def register(username_password: User,
 )
 async def register(username_password: UserLogin,
                 request: Request, response: Response):
+    pass
+
+@route(
+    request_method=app.get,
+    path='/dev/user/get/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.USERS_SERVICE_URL,
+    authentication_required=True
+)#move ssid to header
+async def get_all(request: Request, response: Response, session_id: str = None):
     pass
 
 if __name__ == '__main__':

@@ -62,28 +62,31 @@ def route(
             service_headers = {}
             #TODO: connect it to aa server
             if authentication_required:
-                pass
-                # # authentication
-                # authorization = request.headers.get('authorization')
-                # token_decoder = import_function(authentication_token_decoder)
-                # exc = None
-                # try:
-                #     token_payload = token_decoder(authorization)
-                # except (AuthTokenMissing,
-                #         AuthTokenExpired,
-                #         AuthTokenCorrupted) as e:
-                #     exc = str(e)
-                # except Exception as e:
-                #     # in case a new decoder is used by dependency injection and
-                #     # there might be an unexpected error
-                #     exc = str(e)
-                # finally:
-                #     if exc:
-                #         raise HTTPException(
-                #             status_code=status.HTTP_401_UNAUTHORIZED,
-                #             detail=exc,
-                #             headers={'WWW-Authenticate': 'Bearer'},
-                #         )
+                # authentication
+                #authorization = request.headers.get('Authorization')
+                authorization = request.query_params.get('session_id')
+                token_decoder = import_function(authentication_token_decoder)
+                # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                #             detail=f'{authorization}')
+                exc = None
+                try:
+                    token_payload = token_decoder(authorization)
+                    if not token_payload:
+                        raise HTTPException(
+                            status_code=status.HTTP_401_UNAUTHORIZED,
+                            headers={'WWW-Authenticate': 'Bearer'},
+                        )
+                except Exception as e:
+                    # in case a new decoder is used by dependency injection and
+                    # there might be an unexpected error
+                    exc = str(e)
+                finally:
+                    if exc:
+                        raise HTTPException(
+                            status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=exc,
+                            headers={'WWW-Authenticate': 'Bearer'},
+                        )
 
                 # # authorization
                 # if service_authorization_checker:
