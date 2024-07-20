@@ -40,7 +40,7 @@ async def register(username_password: UserLogin,
 
 @route(
     request_method=app.get,
-    path='/dev/user/get/all',
+    path='/',
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.USERS_SERVICE_URL,
