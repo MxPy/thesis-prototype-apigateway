@@ -2,7 +2,6 @@ import requests
 from fastapi import status
 from schemas.auth import Token
 from conf import settings
-import jwt
 
 from datetime import datetime, timedelta
 
