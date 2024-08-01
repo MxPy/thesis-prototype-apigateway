@@ -18,6 +18,8 @@ def route(
         authentication_token_decoder: str = 'auth.decode_access_token',
         service_authorization_checker: str = 'auth.is_admin_user',
         service_header_generator: str = 'auth.generate_request_header',
+        forge_header_from_response: bool = False,
+        response_key_to_forge: str = None,
         response_model: str = None,
         response_list: bool = False
 ):
@@ -62,6 +64,7 @@ def route(
             service_headers = {}
             #TODO: connect it to aa server
             if authentication_required:
+                
                 # authentication
                 #authorization = request.headers.get('Authorization')
                 authorization = request.query_params.get('session_id')
@@ -87,7 +90,7 @@ def route(
                             detail=exc,
                             headers={'WWW-Authenticate': 'Bearer'},
                         )
-
+                
                 # # authorization
                 # if service_authorization_checker:
                 #     authorization_checker = import_function(
@@ -115,7 +118,7 @@ def route(
 
             payload_obj = kwargs.get(payload_key)
             payload = payload_obj.dict() if payload_obj else {}
-
+            
             url = f'{service_url}{path}'
 
             try:
@@ -146,7 +149,13 @@ def route(
             ]):
                 post_processing_f = import_function(post_processing_func)
                 resp_data = post_processing_f(resp_data)
-
+            
+            if forge_header_from_response and response_key_to_forge:
+                header_value = resp_data.get(response_key_to_forge)
+                if header_value:
+                    response.headers[response_key_to_forge] = str(header_value)
+                    del resp_data[response_key_to_forge]
+                    
             return resp_data
 
     return wrapper

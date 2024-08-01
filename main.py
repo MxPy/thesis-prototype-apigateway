@@ -32,11 +32,14 @@ async def register(username_password: User,
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
     service_url=settings.USERS_SERVICE_URL,
+    forge_header_from_response=True,
+    response_key_to_forge= "session_id",
     authentication_required=False
 )
 async def register(username_password: UserLogin,
                 request: Request, response: Response):
     pass
+
 
 @route(
     request_method=app.get,
@@ -50,5 +53,5 @@ async def get_all(request: Request, response: Response, session_id: str = None):
     pass
 
 if __name__ == '__main__':
-    #change port to nondocker run
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info")
+    #change port to nondocker run to 8001 and in docker to 8000
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, log_level="info", reload=True)

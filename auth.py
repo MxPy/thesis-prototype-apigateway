@@ -2,6 +2,11 @@ import requests
 from fastapi import status
 from schemas.auth import Token
 from conf import settings
+import jwt
+
+from datetime import datetime, timedelta
+
+from conf import settings
 
 def decode_access_token(token: str):
     payload = Token(session_id = token)
