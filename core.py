@@ -18,8 +18,7 @@ def route(
         authentication_token_decoder: str = 'auth.decode_access_token',
         service_authorization_checker: str = 'auth.is_admin_user',
         service_header_generator: str = 'auth.generate_request_header',
-        forge_header_from_response: bool = False,
-        response_key_to_forge: str = None,
+        response_key_to_forge_into_header: str = None,
         response_model: str = None,
         response_list: bool = False
 ):
@@ -62,12 +61,13 @@ def route(
         @functools.wraps(f)
         async def inner(request: Request, response: Response, **kwargs):
             service_headers = {}
+            
             #TODO: connect it to aa server
             if authentication_required:
                 
                 # authentication
                 #authorization = request.headers.get('Authorization')
-                authorization = request.query_params.get('session_id')
+                authorization = kwargs.get('session_id')
                 token_decoder = import_function(authentication_token_decoder)
                 # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                 #             detail=f'{authorization}')
@@ -118,6 +118,7 @@ def route(
 
             payload_obj = kwargs.get(payload_key)
             payload = payload_obj.dict() if payload_obj else {}
+
             
             url = f'{service_url}{path}'
 
@@ -150,11 +151,11 @@ def route(
                 post_processing_f = import_function(post_processing_func)
                 resp_data = post_processing_f(resp_data)
             
-            if forge_header_from_response and response_key_to_forge:
-                header_value = resp_data.get(response_key_to_forge)
+            if response_key_to_forge_into_header:
+                header_value = resp_data.get(response_key_to_forge_into_header)
                 if header_value:
-                    response.headers[response_key_to_forge] = str(header_value)
-                    del resp_data[response_key_to_forge]
+                    response.headers[response_key_to_forge_into_header] = str(header_value)
+                    del resp_data[response_key_to_forge_into_header]
                     
             return resp_data
 

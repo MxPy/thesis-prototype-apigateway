@@ -32,8 +32,7 @@ async def register(username_password: User,
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
     service_url=settings.USERS_SERVICE_URL,
-    forge_header_from_response=True,
-    response_key_to_forge= "session_id",
+    response_key_to_forge_into_header= "session_id",
     authentication_required=False
 )
 async def register(username_password: UserLogin,
@@ -47,9 +46,9 @@ async def register(username_password: UserLogin,
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.USERS_SERVICE_URL,
-    authentication_required=True
+    authentication_required=True,
 )#move ssid to header
-async def get_all(request: Request, response: Response, session_id: str = None):
+async def get_all(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
 if __name__ == '__main__':
