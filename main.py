@@ -53,4 +53,4 @@ async def get_all(request: Request, response: Response, session_id: str = Header
 
 if __name__ == '__main__':
     #change port to nondocker run to 8001 and in docker to 8000
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, log_level="info", reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
