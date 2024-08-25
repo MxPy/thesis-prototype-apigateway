@@ -32,10 +32,21 @@ async def register(username_password: User,
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
     service_url=settings.USERS_SERVICE_URL,
-    response_key_to_forge_into_header= "session_id",
     authentication_required=False
 )
 async def register(username_password: UserLogin,
+                request: Request, response: Response):
+    pass
+
+@route(
+    request_method=app.post,
+    path='/user/reset_password',
+    status_code=status.HTTP_200_OK,
+    payload_key='username_password',
+    service_url=settings.USERS_SERVICE_URL,
+    authentication_required=False
+)
+async def register(username_password: UserResetPassword,
                 request: Request, response: Response):
     pass
 
