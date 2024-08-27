@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     #TODO: move to env
     #change users to localhost for nondocker run
     USERS_SERVICE_URL: str = "http://users:8000"
+    SENSORS_SERVICE_URL: str = "http://sensors:3000"
     GATEWAY_TIMEOUT: int = 59
     ACCESS_TOKEN_DEFAULT_EXPIRE_MINUTES: int = 360
 

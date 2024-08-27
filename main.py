@@ -51,6 +51,17 @@ async def register(username_password: UserLogin,
 async def get_all(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
+@route(
+    request_method=app.get,
+    path='/sensors',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.SENSORS_SERVICE_URL,
+    authentication_required=False,
+)#move ssid to header
+async def get_all(request: Request, response: Response):
+    pass
+
 if __name__ == '__main__':
     #change port to nondocker run to 8001 and in docker to 8000
     uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
