@@ -1,7 +1,7 @@
 import aiohttp
 import functools
 
-
+from schemas.auth import Token
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 from typing import List
@@ -19,6 +19,7 @@ def route(
         service_authorization_checker: str = 'auth.is_admin_user',
         service_header_generator: str = 'auth.generate_request_header',
         response_key_to_forge_into_header: str = None,
+        keep_header_in_body_after_forging: bool = False,
         response_model: str = None,
         response_list: bool = False
 ):
@@ -117,7 +118,11 @@ def route(
             path = scope['path']
 
             payload_obj = kwargs.get(payload_key)
-            payload = payload_obj.dict() if payload_obj else {}
+            if keep_header_in_body_after_forging:
+                token = Token(session_id = authorization)
+                payload = payload_obj.dict() if payload_obj else token.model_dump()
+            else:
+                payload = payload_obj.dict() if payload_obj else {}
 
             
             url = f'{service_url}{path}'
@@ -135,12 +140,12 @@ def route(
                     detail='Service is unavailable.',
                     headers={'WWW-Authenticate': 'Bearer'},
                 )
-            except aiohttp.client_exceptions.ContentTypeError:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail='Service error.',
-                    headers={'WWW-Authenticate': 'Bearer'},
-                )
+            # except aiohttp.client_exceptions.ContentTypeError:
+            #     raise HTTPException(
+            #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #         detail='Service error.',
+            #         headers={'WWW-Authenticate': 'Bearer'},
+            #     )
 
             response.status_code = status_code_from_service
 
