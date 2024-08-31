@@ -27,6 +27,7 @@ async def register(username_password: User,
     path='/login',
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
+    response_key_to_forge_into_header='session_id',
     service_url=settings.USERS_SERVICE_URL,
     authentication_required=False
 )
@@ -39,6 +40,7 @@ async def login(username_password: UserLogin,
     path='/logout',
     status_code=status.HTTP_204_NO_CONTENT,
     payload_key='',
+    
     service_url=settings.USERS_SERVICE_URL,
     authentication_required=True,
     keep_header_in_body_after_forging=True,
