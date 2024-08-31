@@ -16,6 +16,7 @@ router = APIRouter(
     payload_key='',
     service_url=settings.SENSORS_SERVICE_URL,
     authentication_required=True,
+    privileges_level=2,
 )
 async def get_all(request: Request, response: Response, session_id: str = Header(...)):
     pass

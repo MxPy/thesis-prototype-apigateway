@@ -16,11 +16,14 @@ def route(
         authentication_required: bool = False,
         post_processing_func: str = None,
         authentication_token_decoder: str = 'auth.decode_access_token',
+        authentication_token_decoder_admin: str = 'auth.decode_access_token_admin',
+        authentication_token_decoder_backend_admin: str = 'auth.decode_access_token_backend_admin',
         service_authorization_checker: str = 'auth.is_admin_user',
         service_header_generator: str = 'auth.generate_request_header',
         response_key_to_forge_into_header: str = None,
         keep_header_in_body_after_forging: bool = False,
         response_model: str = None,
+        privileges_level: int = 0,
         response_list: bool = False
 ):
     """
@@ -69,7 +72,8 @@ def route(
                 # authentication
                 #authorization = request.headers.get('Authorization')
                 authorization = kwargs.get('session_id')
-                token_decoder = import_function(authentication_token_decoder)
+                token_decoder = import_function(authentication_token_decoder) if privileges_level == 0 else import_function(authentication_token_decoder_admin) if privileges_level == 0 else import_function(authentication_token_decoder_backend_admin) 
+                
                 # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                 #             detail=f'{authorization}')
                 exc = None
