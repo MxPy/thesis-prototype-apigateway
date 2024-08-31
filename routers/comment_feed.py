@@ -1,20 +1,20 @@
 from fastapi import status, Request, Response, APIRouter, Header
 from conf import settings
 from core import route
-from schemas.sensors import *
+from schemas.users import *
 
 
 
 router = APIRouter(
-    prefix='/sensors',
-    tags=['sensors'])
+    prefix='/comment_feed',
+    tags=['comment feed'])
 
 @route(
     request_method=router.get,
-    path='/',
+    path='/popular',
     status_code=status.HTTP_200_OK,
     payload_key='',
-    service_url=settings.SENSORS_SERVICE_URL,
+    service_url=settings.MOCK_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
 )

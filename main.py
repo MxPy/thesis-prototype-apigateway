@@ -3,7 +3,7 @@ from conf import settings
 from typing import Annotated
 from core import route
 import uvicorn
-from routers import auth, sensors
+from routers import auth, sensors, feed, comment_feed, health
 from fastapi.security import HTTPBearer
 from schemas.users import *
 
@@ -21,6 +21,10 @@ def health_check():
 
 app.include_router(auth.router)
 app.include_router(sensors.router)
+app.include_router(health.router)
+app.include_router(feed.router)
+app.include_router(comment_feed.router)
+
 
 
 if __name__ == '__main__':

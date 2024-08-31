@@ -30,7 +30,7 @@ async def register(username_password: User,
     service_url=settings.USERS_SERVICE_URL,
     authentication_required=False
 )
-async def register(username_password: UserLogin,
+async def login(username_password: UserLogin,
                 request: Request, response: Response):
     pass
 
