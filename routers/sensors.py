@@ -20,3 +20,15 @@ router = APIRouter(
 )
 async def get_all(request: Request, response: Response, session_id: str = Header(...)):
     pass
+
+@route(
+    request_method=router.post,
+    path='/create_sensor_data',
+    status_code=status.HTTP_200_OK,
+    payload_key='data',
+    service_url=settings.MOCK_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(data: CreateSensorDataRequestModel, request: Request, response: Response, session_id: str = Header(...)):
+    pass

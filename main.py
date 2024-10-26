@@ -2,6 +2,7 @@ from fastapi import FastAPI, status, Request, Response, Header , Depends
 from conf import settings
 from typing import Annotated
 from core import route
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from routers import auth, sensors, feed, comment_feed, health
 from fastapi.security import HTTPBearer
@@ -9,6 +10,18 @@ from schemas.users import *
 
 app = FastAPI()
 security = HTTPBearer()
+
+origins = ["http://localhost:3000",
+           "http://192.168.33.3:3000"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["*"],
+    allow_credentials = True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["session_id"],
+)
+
 
 @app.get("/")
 async def read_root():
