@@ -15,7 +15,7 @@ router = APIRouter(
     path='/register',
     status_code=status.HTTP_201_CREATED,
     payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
+    service_url=settings.AUTH_SERVICE_URL,
     authentication_required=False
 )
 async def register(username_password: User,
@@ -28,7 +28,7 @@ async def register(username_password: User,
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
     response_key_to_forge_into_header='session_id',
-    service_url=settings.USERS_SERVICE_URL,
+    service_url=settings.AUTH_SERVICE_URL,
     authentication_required=False
 )
 async def login(username_password: UserLogin,
@@ -41,7 +41,7 @@ async def login(username_password: UserLogin,
     status_code=status.HTTP_204_NO_CONTENT,
     payload_key='',
     
-    service_url=settings.USERS_SERVICE_URL,
+    service_url=settings.AUTH_SERVICE_URL,
     authentication_required=True,
     keep_header_in_body_after_forging=True,
 )
@@ -53,7 +53,7 @@ async def logout(request: Request, response: Response, session_id: str = Header(
     path='/reset_password',
     status_code=status.HTTP_200_OK,
     payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
+    service_url=settings.AUTH_SERVICE_URL,
     authentication_required=False
 )
 async def reset_password(username_password: ResetPassword,

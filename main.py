@@ -7,6 +7,15 @@ import uvicorn
 from routers import auth, sensors, feed, comment_feed, health
 from fastapi.security import HTTPBearer
 from schemas.users import *
+import logging
+import sys
+ch = logging.StreamHandler(sys.stdout)
+logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(funcName)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[ch]
+    )
 
 app = FastAPI()
 security = HTTPBearer()

@@ -5,6 +5,8 @@ from schemas.auth import Token
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 from typing import List
+import logging
+logger = logging.getLogger()
 
 #from exceptions import (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted)
 from network import make_request
@@ -72,16 +74,24 @@ def route(
                 # authentication
                 #authorization = request.headers.get('Authorization')
                 authorization = kwargs.get('session_id')
-                token_decoder = import_function(authentication_token_decoder) if privileges_level == 0 else import_function(authentication_token_decoder_admin) if privileges_level == 0 else import_function(authentication_token_decoder_backend_admin) 
+                token_decoder = (
+                    import_function(authentication_token_decoder)
+                    if privileges_level == 0 else
+                    import_function(authentication_token_decoder_admin)
+                    if privileges_level == 1 else
+                    import_function(authentication_token_decoder_backend_admin)
+                )
                 
                 # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                 #             detail=f'{authorization}')
                 exc = None
                 try:
-                    token_payload = token_decoder(authorization)
-                    if not token_payload:
+                    token_payload = await token_decoder(authorization)
+                    logger.info(token_payload["valid"])
+                    if not token_payload["valid"]:
                         raise HTTPException(
                             status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=token_payload["detail"],
                             headers={'WWW-Authenticate': 'Bearer'},
                         )
                 except Exception as e:
