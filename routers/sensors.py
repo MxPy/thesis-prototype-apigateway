@@ -9,12 +9,13 @@ router = APIRouter(
     prefix='/sensors',
     tags=['sensors'])
 
+
 @route(
     request_method=router.post,
-    path='/create_sensor_data',
+    path='/handle_sensor_data',
     status_code=status.HTTP_200_OK,
     payload_key='data',
-    service_url=settings.MOCK_SERVICE_URL,
+    service_url=settings.SENSORS_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
 )

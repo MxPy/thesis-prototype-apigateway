@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 
 class CreateSensorDataRequestModel(BaseModel):
-    userId: int
-    trainingId: int
+    userId: str
     ir: list[int]
     red: list[int]
     ax: list[int]
