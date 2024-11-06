@@ -6,7 +6,7 @@ from schemas.sensors import *
 
 
 router = APIRouter(
-    prefix='/sensors',
+    #prefix='/sensors',
     tags=['sensors'])
 
 
