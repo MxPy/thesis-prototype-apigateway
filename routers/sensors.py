@@ -3,12 +3,9 @@ from conf import settings
 from core import route
 from schemas.sensors import *
 
-
-
 router = APIRouter(
     prefix='/sensors',
     tags=['sensors'])
-
 
 @route(
     request_method=router.post,

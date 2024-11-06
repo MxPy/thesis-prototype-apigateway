@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from uuid import uuid4
 
 class User(BaseModel):
-    user_id: str
+    userId: str
     gender: str
     age: int
     weight: float
@@ -11,8 +11,8 @@ class User(BaseModel):
     tdee: int
     
 class UserID(BaseModel):
-    user_id: str
+    userId: str
 
 class UpdateUserRequest(BaseModel):
-    user_id: str = Field(alias="userId")
+    userId: str = Field(alias="userId")
     user: User
