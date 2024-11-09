@@ -10,9 +10,15 @@ class User(BaseModel):
     bmr: int
     tdee: int
     
-class UserID(BaseModel):
-    userId: str
+class BMRTDEE(BaseModel):
+    bmr: int
+    tdee: int
 
 class UpdateUserRequest(BaseModel):
-    userId: str = Field(alias="userId")
-    user: User
+    gender: str
+    age: int
+    weight: float
+    height: int
+    bmr: int
+    tdee: int
+    
