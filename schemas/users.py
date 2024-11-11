@@ -12,10 +12,10 @@ class UserLogin(BaseModel):
     password: str 
     class Config:
         orm_mode=True
-
-class UserResetPassword(BaseModel):
+        
+class ResetPassword(BaseModel):
     username: str 
-    password_reset_code: str 
+    password_reset_code: str
     new_password: str 
     class Config:
         orm_mode=True

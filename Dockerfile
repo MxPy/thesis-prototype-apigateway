@@ -7,5 +7,6 @@ RUN pip3 install -r req.txt
 
 COPY . .
 
+RUN python -m grpc_tools.protoc -I ./protobuf --python_out=. --grpc_python_out=. auth.proto
 EXPOSE 8000
 CMD ["python3", "main.py"]

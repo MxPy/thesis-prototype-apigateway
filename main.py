@@ -2,65 +2,52 @@ from fastapi import FastAPI, status, Request, Response, Header , Depends
 from conf import settings
 from typing import Annotated
 from core import route
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from routers import auth, sensors, feed, comment_feed, health, forum
 from fastapi.security import HTTPBearer
 from schemas.users import *
+import logging
+import sys
+ch = logging.StreamHandler(sys.stdout)
+logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(funcName)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[ch]
+    )
 
 app = FastAPI()
 security = HTTPBearer()
 
-@app.get("/test")
+origins = ["http://localhost:3000",
+           "http://192.168.33.3:3000"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["*"],
+    allow_credentials = True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["session_id"],
+)
+
+
+@app.get("/")
 async def read_root():
 	return {"Hello":"World"}
 
-#TODO: Move to routers
-@route(
-    request_method=app.post,
-    path='/user/register',
-    status_code=status.HTTP_201_CREATED,
-    payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
-    authentication_required=False
-)
-async def register(username_password: User,
-                request: Request, response: Response):
-    pass
-
-@route(
-    request_method=app.post,
-    path='/user/login',
-    status_code=status.HTTP_200_OK,
-    payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
-    authentication_required=False
-)
-async def register(username_password: UserLogin,
-                request: Request, response: Response):
-    pass
-
-@route(
-    request_method=app.post,
-    path='/user/reset_password',
-    status_code=status.HTTP_200_OK,
-    payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
-    authentication_required=False
-)
-async def register(username_password: UserResetPassword,
-                request: Request, response: Response):
-    pass
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 
-@route(
-    request_method=app.get,
-    path='/',
-    status_code=status.HTTP_200_OK,
-    payload_key='',
-    service_url=settings.USERS_SERVICE_URL,
-    authentication_required=True,
-)#move ssid to header
-async def get_all(request: Request, response: Response, session_id: str = Header(...)):
-    pass
+app.include_router(auth.router)
+app.include_router(sensors.router)
+app.include_router(health.router)
+app.include_router(feed.router)
+app.include_router(comment_feed.router)
+app.include_router(forum.router)
+
 
 if __name__ == '__main__':
     #change port to nondocker run to 8001 and in docker to 8000

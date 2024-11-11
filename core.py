@@ -1,51 +1,56 @@
 import aiohttp
 import functools
+import urllib.parse
 
-
+from schemas.auth import Token
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 from typing import List
+import logging
+import requests
+logger = logging.getLogger()
 
-#from exceptions import (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted)
 from network import make_request
 
-#test
 def route(
         request_method, path: str, status_code: int,
         payload_key: str, service_url: str,
         authentication_required: bool = False,
         post_processing_func: str = None,
         authentication_token_decoder: str = 'auth.decode_access_token',
+        authentication_token_decoder_admin: str = 'auth.decode_access_token_admin',
+        authentication_token_decoder_backend_admin: str = 'auth.decode_access_token_backend_admin',
         service_authorization_checker: str = 'auth.is_admin_user',
         service_header_generator: str = 'auth.generate_request_header',
         response_key_to_forge_into_header: str = None,
+        keep_header_in_body_after_forging: bool = False,
         response_model: str = None,
+        privileges_level: int = 0,
         response_list: bool = False
 ):
     """
-    it is an advanced wrapper for FastAPI router, purpose is to make FastAPI
-    acts as a gateway API in front of anything
+    Advanced wrapper for FastAPI router that acts as a gateway API.
+    Supports path parameters and forwards them to the underlying service.
 
     Args:
-        request_method: is a callable like (app.get, app.post and so on.)
-        path: is the path to bind (like app.post('/api/users/'))
-        status_code: expected HTTP(status.HTTP_200_OK) status code
-        payload_key: used to easily fetch payload data in request body
-        authentication_required: is bool to give to user an auth priviliges
-        post_processing_func: does extra things once in-network service returns
-        authentication_token_decoder: decodes JWT token as a proper payload
-        service_authorization_checker: does simple front authorization checks
-        service_header_generator: generates headers for inner services from jwt token payload # noqa
-        response_model: shows return type and details on api docs
-        response_list: decides whether response structure is list or not
+        request_method: Callable like (app.get, app.post etc.)
+        path: Path to bind (like '/api/users/{user_id}')
+        status_code: Expected HTTP status code
+        payload_key: Key for the payload parameter in the endpoint function
+        service_url: Base URL of the target service
+        authentication_required: Whether authentication is required
+        post_processing_func: Extra processing after service returns
+        authentication_token_decoder: JWT token decoder
+        service_authorization_checker: Front authorization checks
+        service_header_generator: Header generator for inner services
+        response_model: Return type for API docs
+        response_list: Whether response is a list
+        privileges_level: Authentication level (0=user, 1=admin, 2=backend_admin)
 
     Returns:
-        wrapped endpoint result as is
-
+        Wrapped endpoint result
     """
 
-    # request_method: app.post || app.get or so on
-    # app_any: app.post('/api/login', status_code=200, response_model=int)
     if response_model:
         response_model = import_function(response_model)
         if response_list:
@@ -60,28 +65,33 @@ def route(
         @app_any
         @functools.wraps(f)
         async def inner(request: Request, response: Response, **kwargs):
+            nonlocal service_url  # Dodajemy dostęp do zmiennej z zewnętrznego zakresu
             service_headers = {}
+            authorization = None
             
-            #TODO: connect it to aa server
+            #logger.info(requests.get("http://user-node-service:3002/workouts"))
+            
             if authentication_required:
-                
-                # authentication
-                #authorization = request.headers.get('Authorization')
                 authorization = kwargs.get('session_id')
-                token_decoder = import_function(authentication_token_decoder)
-                # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                #             detail=f'{authorization}')
+                token_decoder = (
+                    import_function(authentication_token_decoder)
+                    if privileges_level == 0 else
+                    import_function(authentication_token_decoder_admin)
+                    if privileges_level == 1 else
+                    import_function(authentication_token_decoder_backend_admin)
+                )
+                
                 exc = None
                 try:
-                    token_payload = token_decoder(authorization)
-                    if not token_payload:
+                    token_payload = await token_decoder(authorization)
+                    logger.info(token_payload["valid"])
+                    if not token_payload["valid"]:
                         raise HTTPException(
                             status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=token_payload["detail"],
                             headers={'WWW-Authenticate': 'Bearer'},
                         )
                 except Exception as e:
-                    # in case a new decoder is used by dependency injection and
-                    # there might be an unexpected error
                     exc = str(e)
                 finally:
                     if exc:
@@ -90,37 +100,53 @@ def route(
                             detail=exc,
                             headers={'WWW-Authenticate': 'Bearer'},
                         )
-                
-                # # authorization
-                # if service_authorization_checker:
-                #     authorization_checker = import_function(
-                #         service_authorization_checker
-                #     )
-                #     is_user_eligible = authorization_checker(token_payload)
-                #     if not is_user_eligible:
-                #         raise HTTPException(
-                #             status_code=status.HTTP_403_FORBIDDEN,
-                #             detail='You are not allowed to access this scope.',
-                #             headers={'WWW-Authenticate': 'Bearer'},
-                #         )
-
-                # # service headers
-                # if service_header_generator:
-                #     header_generator = import_function(
-                #         service_header_generator
-                #     )
-                #     service_headers = header_generator(token_payload)
 
             scope = request.scope
-
             method = scope['method'].lower()
-            path = scope['path']
-
-            payload_obj = kwargs.get(payload_key)
-            payload = payload_obj.dict() if payload_obj else {}
-
             
-            url = f'{service_url}{path}'
+            # Get the actual request path from scope
+            service_path = scope['path']
+
+            # Extract path parameters
+            request_params = {}
+            for param_name, param_value in kwargs.items():
+                if param_name != 'session_id' and param_name != payload_key:
+                    request_params[param_name] = param_value
+
+            # Extract query parameters
+            query_params = request.query_params
+            if query_params:
+                query_string = '?' + str(query_params)
+                service_path += query_string
+
+            # Handle payload
+            if method in ['post', 'put', 'patch']:
+                # For methods that typically have a body, get the payload from kwargs
+                payload_obj = kwargs.get(payload_key)
+                if payload_obj:
+                    if hasattr(payload_obj, 'dict'):
+                        payload = payload_obj.dict()
+                    elif hasattr(payload_obj, 'model_dump'):
+                        payload = payload_obj.model_dump()
+                    else:
+                        payload = payload_obj
+                elif keep_header_in_body_after_forging and authorization:
+                    # If no payload but keeping header in body is requested
+                    token = Token(session_id=authorization)
+                    payload = token.model_dump()
+                else:
+                    # Include path parameters in the payload for these methods
+                    payload = request_params
+            else:
+                # For other methods (GET, DELETE), don't include a payload
+                payload = None
+
+            # Ensure service_url doesn't end with slash and service_path starts with slash
+            service_url = service_url.rstrip('/')
+            if not service_path.startswith('/'):
+                service_path = '/' + service_path
+
+            url = f'{service_url}{service_path}'
 
             try:
                 resp_data, status_code_from_service = await make_request(
@@ -133,12 +159,6 @@ def route(
                 raise HTTPException(
                     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                     detail='Service is unavailable.',
-                    headers={'WWW-Authenticate': 'Bearer'},
-                )
-            except aiohttp.client_exceptions.ContentTypeError:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail='Service error.',
                     headers={'WWW-Authenticate': 'Bearer'},
                 )
 
@@ -159,6 +179,7 @@ def route(
                     
             return resp_data
 
+        return inner
     return wrapper
 
 
