@@ -50,3 +50,5 @@ requests
 grpcio
 grpcio-tools
 protobuf
+websockets
+aio-pika
