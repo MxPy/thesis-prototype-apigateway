@@ -1,11 +1,11 @@
 import aio_pika
 import logging
-from queue.settings import settings
+from q.settings import settings
 from typing import AsyncGenerator
 from fastapi import Depends, FastAPI
 from contextlib import asynccontextmanager
 from websocket.connectionManager import manager
-from queue.messages import *
+from q.messages import *
 import json
 from typing import Dict, List
 
@@ -13,6 +13,10 @@ logger = logging.getLogger()
 
 activeUsersTemplate = Dict[str, List[str]]
 activeUsers: activeUsersTemplate = {}
+
+activeQueuesTemplate = List[str]
+activeQueues: activeQueuesTemplate = ["Test","HealthData", "SubData"]
+
 
 async def get_amqp_connection() -> aio_pika.abc.AbstractConnection:
     """Connect to AMQP server."""
@@ -62,6 +66,7 @@ async def declare_queue(
     **kwargs,
 ) -> aio_pika.abc.AbstractQueue:
     """Create AMQP queue."""
+    logger.debug(f"Queue {queue} declarated!!!")
     return await channel.declare_queue(name=queue, auto_delete=True, **kwargs)
         
 async def process_message(message: aio_pika.abc.AbstractIncomingMessage):
@@ -71,36 +76,12 @@ w
     """
     try:
         async with message.process(requeue=True):
-            logger.info(f"MESSAGE RECEIVED: {message.message_id}")
-            msg = BroadcastMessage(**json.loads(message.body.decode()))
-            
-            logger.info(
-                f"MESSAGE CONSUMED: {message.message_id} -- {msg.body})"
-            )
-            await manager.broadcast("chuj", {
-                "message_id": message.message_id,
-                "body": msg.body
-            })
-    except Exception as e:
-        logger.error(e)
-
-async def process_broadcast_message(message: aio_pika.abc.AbstractIncomingMessage):
-    """Do something with the message.
-w
-    :param message: A message from the queue.
-    """
-    try:
-        async with message.process(requeue=True):
-            logger.info(f"MESSAGE RECEIVED: {message.message_id}")
-            msg = BroadcastMessage(**json.loads(message.body.decode()))
-            
-            logger.info(
-                f"BROADCAST MESSAGE CONSUMED: {message.message_id} -- {msg.body})"
-            )
-            await manager.broadcast("chuj", {
-                "message_id": message.message_id,
-                "body": msg.body
-            })
+            jmsg = json.loads(message.body.decode())
+            logger.info(f"MESSAGE RECEIVED: {jmsg['type']}")
+            if int(jmsg['type']) == 0:
+                jmsg = DirectMessage(**jmsg)
+                for session in activeUsers.get(jmsg.target):
+                    await manager.broadcast(session, jmsg.data.model_dump())
     except Exception as e:
         logger.error(e)
         
@@ -110,10 +91,44 @@ w
 async def lifespan(app: FastAPI):
     """Start internal message consumer on app startup."""
     connection = await aio_pika.connect_robust(str(settings.AMQP_URL))
-
+    logger.debug("Rabbit connected")
     async with connection:
         channel = await connection.channel()
         await channel.set_qos(prefetch_count=settings.PREFECTH_COUNT)
-        queue = await declare_queue(channel=channel, queue=settings.QUEUE)
-        await queue.consume(process_message)
+        queues = [await declare_queue(channel=channel, queue=queue) for queue in activeQueues]
+        for queue in queues:
+            await queue.consume(process_message) 
         yield
+
+async def get_channel(
+    connection: aio_pika.abc.AbstractConnection = Depends(get_amqp_connection)
+) -> AsyncGenerator[aio_pika.abc.AbstractChannel, None]:
+    """Connect to and yield a AMQP channel.
+
+    :yield: RabbitMQ channel.
+    """
+    async with connection:
+        channel = await connection.channel()
+        queues = [await declare_queue(channel=channel, queue=queue) for queue in activeQueues]
+        yield channel
+
+async def publish_message(
+    type: int,
+    target: str,
+    data: str,
+    channel: aio_pika.abc.AbstractChannel,
+):
+    """Publish a message to the event queue.
+
+    :param message: A message to publish.
+    :param channel: The AMQP channel to publish the message to.
+    """
+    msg = aio_pika.Message(
+        body=DirectMessage(type=type, target=target, data=MessageData(type=0, data=data)).model_dump_json().encode(),
+    )
+    await channel.default_exchange.publish(
+        msg,
+        routing_key="Test",
+    )
+
+    return msg

@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from routers import auth, sensors, feed, comment_feed, health, websockets
 from fastapi.security import HTTPBearer
+from q.queueManager import lifespan
 from schemas.users import *
 import logging
 import sys
@@ -17,7 +18,7 @@ logging.basicConfig(
         handlers=[ch]
     )
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 security = HTTPBearer()
 
 origins = ["http://localhost:3000",
