@@ -78,10 +78,14 @@ w
         async with message.process(requeue=True):
             jmsg = json.loads(message.body.decode())
             logger.info(f"MESSAGE RECEIVED: {jmsg['type']}")
+            logger.info(f"{jmsg}")
             if int(jmsg['type']) == 0:
                 jmsg = DirectMessage(**jmsg)
-                for session in activeUsers.get(jmsg.target):
-                    await manager.broadcast(session, jmsg.data.model_dump())
+                if activeUsers.get(jmsg.target):
+                    for session in activeUsers.get(jmsg.target):
+                        await manager.broadcast(session, jmsg.data.model_dump())
+                else:
+                    pass
     except Exception as e:
         logger.error(e)
         
