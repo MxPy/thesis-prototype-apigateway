@@ -16,7 +16,7 @@ router = APIRouter(
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(data: CreateSensorDataRequestModel, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(data: CreateSensorDataRequestModel, request: Request, response: Response, workoutType: str | None = None, session_id: str = Header(...)):
     pass
 
 @route(
