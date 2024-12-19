@@ -2,7 +2,7 @@ from fastapi import status, Request, Response, APIRouter, Header, Query
 from conf import settings
 from core import route
 from schemas.health import (
-    User, UpdateUserRequest, BMRTDEE
+    User, UpdateUserRequest, BMRTDEE, Workout
 )
 from typing import Optional
 
@@ -84,6 +84,18 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     pass
 
 @route(
+    request_method=router.post,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='data',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all(data :Workout, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
     request_method=router.get,
     path='/workouts/single',
     status_code=status.HTTP_200_OK,
@@ -143,6 +155,17 @@ async def delete_workouts(
 
 from fastapi import Header, Request, Response, status
 from schemas.health import User, UsersResponse, CountResponse
+@route(
+    request_method=router.delete,
+    path='/users',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all_users(userId :str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
 
 @route(
     request_method=router.get,
@@ -167,6 +190,7 @@ async def get_all_users(request: Request, response: Response, session_id: str = 
 )
 async def delete_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
+        
 
 @route(
     request_method=router.get,
