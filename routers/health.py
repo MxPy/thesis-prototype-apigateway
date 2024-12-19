@@ -94,3 +94,88 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
 )
 async def get_all(search:str, userId :str, workoutId:str, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
+from fastapi import Header, Request, Response, status, Query
+from schemas.health import Workout, WorkoutsResponse, WorkoutIdQuery
+from typing import Optional
+
+@route(
+    request_method=router.get,
+    path='/workouts/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_workouts(
+    request: Request, 
+    response: Response, 
+    session_id: str = Header(...),
+    id: Optional[int] = Query(None, description="Optional workout ID")
+):
+    """
+    If id is provided, returns a specific workout.
+    If id is not provided, returns all workouts.
+    """
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/workouts/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def delete_workouts(
+    request: Request, 
+    response: Response, 
+    session_id: str = Header(...),
+    id: Optional[int] = Query(None, description="Optional workout ID")
+):
+    """
+    If id is provided, deletes a specific workout.
+    If id is not provided, deletes all workouts.
+    """
+    pass
+
+from fastapi import Header, Request, Response, status
+from schemas.health import User, UsersResponse, CountResponse
+
+@route(
+    request_method=router.get,
+    path='/users/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all_users(request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/users/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def delete_all_users(request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
+    path='/users/count',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def count_all_users(request: Request, response: Response, session_id: str = Header(...)):
+    pass

@@ -36,5 +36,6 @@ async def make_request(
         async with aiohttp.ClientSession() as session:
             request = getattr(session, method)
             async with request(url, json=data, headers=headers) as response:
+                print(response)
                 data = await response.json()
                 return (data, response.status)
