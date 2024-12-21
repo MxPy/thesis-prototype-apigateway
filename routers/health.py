@@ -35,6 +35,9 @@ async def get_all(data:User, request: Request, response: Response, session_id: s
 async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
+
+# TODO: fix this, should be with param:
+# PUT /health/users?userId=qwe 
 @route(
     request_method=router.put,
     path='/users',
@@ -70,6 +73,11 @@ async def get_all(userId :str, data:BMRTDEE, request: Request, response: Respons
 )
 async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
+# WORKOUTS
+
+#TODO: create new for user
+#	POST http://localhost:8000/health/workouts
 
 @route(
     request_method=router.get,
@@ -156,6 +164,25 @@ from schemas.health import User, UsersResponse, CountResponse
 async def get_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
+
+@route(
+    request_method=router.delete,
+    path='/users',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+) # TODO: debug, remove comment, 500
+async def delete_user(
+    request: Request, 
+    response: Response, 
+    session_id: str = Header(...),
+    userId: str = Query(..., description="User ID")
+):
+    pass
+
+
 @route(
     request_method=router.delete,
     path='/users/all',
@@ -164,7 +191,7 @@ async def get_all_users(request: Request, response: Response, session_id: str = 
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=1,
-)
+) # TODO: debug, remove comment, 500
 async def delete_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
