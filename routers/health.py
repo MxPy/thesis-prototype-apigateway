@@ -2,7 +2,7 @@ from fastapi import status, Request, Response, APIRouter, Header, Query
 from conf import settings
 from core import route
 from schemas.health import (
-    User, UpdateUserRequest, BMRTDEE, Workout
+    User, UpdateUserRequest, BMRTDEE, Workout, WorkoutBase
 )
 from typing import Optional
 

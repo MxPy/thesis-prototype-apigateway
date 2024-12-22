@@ -84,16 +84,17 @@ class CountResponse(BaseModel):
     
 
 class WorkoutBase(BaseModel):
+    workoutId: int  # uint32 z proto
     userId: str
     workoutType: str
-    duration: int
+    duration: int  # uint32 z proto
     caloriesBurned: float
-    avgSteps: float
+    avgSteps: int  # uint32 z proto, powinno być int zamiast float
     avgHeartrate: float
     date: str
 
-class Workout(WorkoutBase):
-    workoutId: int
+class Workout(BaseModel):
+    workout: WorkoutBase
 
 class WorkoutIdQuery(BaseModel):
     id: Optional[int] = None
