@@ -25,7 +25,7 @@ async def get_all(data:User, request: Request, response: Response, session_id: s
 
 @route(
     request_method=router.get,
-    path='/users',
+    path='/users/{}',
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.HEALTH_SERVICE_URL,
@@ -43,6 +43,18 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
+)
+async def get_all(userId :str, data:UpdateUserRequest, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.put,
+    path='/users',
+    status_code=status.HTTP_200_OK,
+    payload_key='data',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
 )
 async def get_all(userId :str, data:UpdateUserRequest, request: Request, response: Response, session_id: str = Header(...)):
     pass
