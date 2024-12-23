@@ -25,7 +25,7 @@ async def get_all(data:User, request: Request, response: Response, session_id: s
 
 @route(
     request_method=router.get,
-    path='/users/{}',
+    path='/users/',
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.HEALTH_SERVICE_URL,
@@ -96,6 +96,42 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     pass
 
 @route(
+    request_method=router.get,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(userId :str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(userId :str, workoutId: str, search:str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(userId :str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
     request_method=router.post,
     path='/workouts',
     status_code=status.HTTP_200_OK,
@@ -143,6 +179,26 @@ async def get_workouts(
     If id is not provided, returns all workouts.
     """
     pass
+
+@route(
+    request_method=router.get,
+    path='/workouts/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_workouts(
+    request: Request, 
+    response: Response, 
+    session_id: str = Header(...),
+    id: Optional[int] = Query(None, description="Optional workout ID")
+):
+    """
+    If id is provided, returns a specific workout.
+    If id is not provided, returns all workouts.
+    """
 
 @route(
     request_method=router.delete,
