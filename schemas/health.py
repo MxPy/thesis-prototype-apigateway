@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import datetime
+from typing import Optional
 
 class User(BaseModel):
     userId: str
@@ -8,8 +9,8 @@ class User(BaseModel):
     age: int
     weight: float
     height: int
-    bmr: int
-    tdee: int
+    bmr: Optional[int] = None
+    tdee: Optional[int] = None
     
 class BMRTDEE(BaseModel):
     bmr: int
@@ -20,8 +21,8 @@ class UpdateUserRequest(BaseModel):
     age: int
     weight: float
     height: int
-    bmr: int
-    tdee: int
+    bmr: Optional[int] = None
+    tdee: Optional[int] = None
 
 #TODO MOVE TO ADMIN BELOW SCHEMAS
     
@@ -71,8 +72,8 @@ class User(BaseModel):
     age: int
     weight: float
     height: int
-    bmr: int
-    tdee: int
+    bmr: Optional[int] = None
+    tdee: Optional[int] = None
 
 # Response Models
 class UsersResponse(BaseModel):
@@ -81,15 +82,16 @@ class UsersResponse(BaseModel):
 class CountResponse(BaseModel):
     count: int
     
-    
+# WORKOUT SCHEMAS
 
 class WorkoutBase(BaseModel):
-    workoutId: int  # uint32 z proto
+    # workoutId: Optional[int] = None
     userId: str
     workoutType: str
-    duration: int  # uint32 z proto
+    duration: int  
+    distance: float
     caloriesBurned: float
-    avgSteps: int  # uint32 z proto, powinno być int zamiast float
+    avgSteps: int 
     avgHeartrate: float
     date: str
 
