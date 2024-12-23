@@ -43,7 +43,7 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
-)
+) # TODO add userId below as query parameter 
 async def get_all(userId :str, data:UpdateUserRequest, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
@@ -55,7 +55,7 @@ async def get_all(userId :str, data:UpdateUserRequest, request: Request, respons
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=1,
-)
+) # TODO add userId below as query parameter 
 async def get_all(userId :str, data:UpdateUserRequest, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
