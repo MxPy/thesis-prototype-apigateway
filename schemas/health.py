@@ -87,12 +87,11 @@ class CountResponse(BaseModel):
 class WorkoutBase(BaseModel):
     # workoutId: Optional[int] = None
     userId: str
-    workoutType: str
-    duration: int  
-    distance: float
-    caloriesBurned: float
-    avgSteps: int 
-    avgHeartrate: float
+    workoutType: Optional[str] = None
+    duration: Optional[int] = None
+    caloriesBurned: Optional[float] = None
+    avgSteps: Optional[float] = None
+    avgHeartrate: Optional[float] = None
     date: str
 
 class Workout(BaseModel):
