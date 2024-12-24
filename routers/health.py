@@ -4,7 +4,7 @@ from core import route
 from schemas.health import (
     User, UpdateUserRequest, BMRTDEE, Workout, WorkoutBase
 )
-from typing import Optional
+from typing import Optional, Union
 
 router = APIRouter(
     prefix='/health',
@@ -83,17 +83,6 @@ async def get_all(userId :str, data:BMRTDEE, request: Request, response: Respons
 async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
-@route(
-    request_method=router.get,
-    path='/workouts',
-    status_code=status.HTTP_200_OK,
-    payload_key='',
-    service_url=settings.HEALTH_SERVICE_URL,
-    authentication_required=True,
-    privileges_level=0,
-)
-async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
-    pass
 
 @route(
     request_method=router.get,
@@ -104,19 +93,7 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
-    pass
-
-@route(
-    request_method=router.get,
-    path='/workouts',
-    status_code=status.HTTP_200_OK,
-    payload_key='',
-    service_url=settings.HEALTH_SERVICE_URL,
-    authentication_required=True,
-    privileges_level=0,
-)
-async def get_all(userId :str, workoutId: str, search:str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(request: Request, response: Response, userId :str, workoutId: Union[str, None] = None, search: Union[str, None] = None, session_id: str = Header(...)):
     pass
 
 @route(

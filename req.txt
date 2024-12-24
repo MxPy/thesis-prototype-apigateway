@@ -52,3 +52,4 @@ grpcio-tools
 protobuf
 websockets
 aio-pika
+minio==7.1.14

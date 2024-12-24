@@ -4,7 +4,7 @@ from typing import Annotated
 from core import route
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from routers import auth, sensors, feed, comment_feed, health, forum, websockets
+from routers import auth, sensors, feed, comment_feed, health, forum, websockets, other
 from fastapi.security import HTTPBearer
 from q.queueManager import lifespan
 from schemas.users import *
@@ -50,6 +50,7 @@ app.include_router(feed.router)
 app.include_router(comment_feed.router)
 app.include_router(websockets.router)
 app.include_router(forum.router)
+app.include_router(other.filesRouter)
 
 
 if __name__ == '__main__':
