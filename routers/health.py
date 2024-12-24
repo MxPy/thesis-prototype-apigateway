@@ -2,14 +2,15 @@ from fastapi import status, Request, Response, APIRouter, Header, Query
 from conf import settings
 from core import route
 from schemas.health import (
-    User, UpdateUserRequest, BMRTDEE
+    User, UpdateUserRequest, BMRTDEE, Workout, WorkoutBase
 )
-from typing import Optional
+from typing import Optional, Union
 
 router = APIRouter(
     prefix='/health',
     tags=['health']
 )
+
 
 @route(
     request_method=router.post,
@@ -20,20 +21,22 @@ router = APIRouter(
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(data:User, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(data: User, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
 
 @route(
     request_method=router.get,
-    path='/users',
+    path='/users/',
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
 
 @route(
     request_method=router.put,
@@ -44,8 +47,24 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, data:UpdateUserRequest, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, data: UpdateUserRequest, request: Request, response: Response,
+                  session_id: str = Header(...)):
     pass
+
+
+@route(
+    request_method=router.put,
+    path='/users',
+    status_code=status.HTTP_200_OK,
+    payload_key='data',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all(userId: str, data: UpdateUserRequest, request: Request, response: Response,
+                  session_id: str = Header(...)):
+    pass
+
 
 @route(
     request_method=router.put,
@@ -56,8 +75,9 @@ async def get_all(userId :str, data:UpdateUserRequest, request: Request, respons
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, data:BMRTDEE, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, data: BMRTDEE, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
 
 @route(
     request_method=router.get,
@@ -68,8 +88,9 @@ async def get_all(userId :str, data:BMRTDEE, request: Request, response: Respons
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, request: Request, response: Response, session_id: str = Header(...)):
     pass
+
 
 @route(
     request_method=router.get,
@@ -80,8 +101,36 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId :str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(request: Request, response: Response, userId: str, workoutId: Union[str, None] = None,
+                  search: Union[str, None] = None, session_id: str = Header(...)):
     pass
+
+
+@route(
+    request_method=router.delete,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(userId: str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+
+@route(
+    request_method=router.post,
+    path='/workouts',
+    status_code=status.HTTP_200_OK,
+    payload_key='data',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all(data: Workout, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
 
 @route(
     request_method=router.get,
@@ -92,12 +141,15 @@ async def get_all(userId :str, request: Request, response: Response, session_id:
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(search:str, userId :str, workoutId:str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(search: str, userId: str, workoutId: str, request: Request, response: Response,
+                  session_id: str = Header(...)):
     pass
+
 
 from fastapi import Header, Request, Response, status, Query
 from schemas.health import Workout, WorkoutsResponse, WorkoutIdQuery
 from typing import Optional
+
 
 @route(
     request_method=router.get,
@@ -109,16 +161,38 @@ from typing import Optional
     privileges_level=1,
 )
 async def get_workouts(
-    request: Request, 
-    response: Response, 
-    session_id: str = Header(...),
-    id: Optional[int] = Query(None, description="Optional workout ID")
+        request: Request,
+        response: Response,
+        session_id: str = Header(...),
+        id: Optional[int] = Query(None, description="Optional workout ID")
 ):
     """
     If id is provided, returns a specific workout.
     If id is not provided, returns all workouts.
     """
     pass
+
+
+@route(
+    request_method=router.get,
+    path='/workouts/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_workouts(
+        request: Request,
+        response: Response,
+        session_id: str = Header(...),
+        id: Optional[int] = Query(None, description="Optional workout ID")
+):
+    """
+    If id is provided, returns a specific workout.
+    If id is not provided, returns all workouts.
+    """
+
 
 @route(
     request_method=router.delete,
@@ -130,10 +204,10 @@ async def get_workouts(
     privileges_level=1,
 )
 async def delete_workouts(
-    request: Request, 
-    response: Response, 
-    session_id: str = Header(...),
-    id: Optional[int] = Query(None, description="Optional workout ID")
+        request: Request,
+        response: Response,
+        session_id: str = Header(...),
+        id: Optional[int] = Query(None, description="Optional workout ID")
 ):
     """
     If id is provided, deletes a specific workout.
@@ -141,8 +215,23 @@ async def delete_workouts(
     """
     pass
 
+
 from fastapi import Header, Request, Response, status
 from schemas.health import User, UsersResponse, CountResponse
+
+
+@route(
+    request_method=router.delete,
+    path='/users',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_all_users(userId: str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
 
 @route(
     request_method=router.get,
@@ -156,6 +245,7 @@ from schemas.health import User, UsersResponse, CountResponse
 async def get_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
+
 @route(
     request_method=router.delete,
     path='/users/all',
@@ -167,6 +257,7 @@ async def get_all_users(request: Request, response: Response, session_id: str = 
 )
 async def delete_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
+
 
 @route(
     request_method=router.get,
