@@ -3,6 +3,7 @@ from typing import List
 from datetime import datetime
 from typing import Optional
 
+
 class User(BaseModel):
     userId: str
     gender: str
@@ -11,21 +12,27 @@ class User(BaseModel):
     height: int
     bmr: Optional[int] = None
     tdee: Optional[int] = None
-    
+
+
 class BMRTDEE(BaseModel):
     bmr: int
     tdee: int
 
-class UpdateUserRequest(BaseModel):
-    gender: str
-    age: int
-    weight: float
-    height: int
-    bmr: Optional[int] = None
-    tdee: Optional[int] = None
 
-#TODO MOVE TO ADMIN BELOW SCHEMAS
-    
+# class UpdateUserRequest(BaseModel):
+#     gender: str
+#     age: int
+#     weight: float
+#     height: int
+#     bmr: Optional[int] = None
+#     tdee: Optional[int] = None
+
+class UpdateUserRequest(BaseModel):
+    user: User
+
+
+# TODO MOVE TO ADMIN BELOW SCHEMAS
+
 # Request Models
 class CreateSensorDataRequest(BaseModel):
     userId: str
@@ -36,20 +43,25 @@ class CreateSensorDataRequest(BaseModel):
     az: List[int]
     recordedAt: str
 
+
 # Query Parameter Models
 class UserIdQuery(BaseModel):
     userId: str
+
 
 class UserIdSensorIdQuery(BaseModel):
     userId: str
     id: int
 
+
 # Response Models
 class SensorDataResponse(BaseModel):
     data: List[dict]
 
+
 class CountResponse(BaseModel):
     count: int
+
 
 # Base Schema Model (as defined in components)
 class SensorData(BaseModel):
@@ -65,6 +77,7 @@ class SensorData(BaseModel):
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 # Base User Model (as defined in components)
 class User(BaseModel):
     userId: str
@@ -75,13 +88,16 @@ class User(BaseModel):
     bmr: Optional[int] = None
     tdee: Optional[int] = None
 
+
 # Response Models
 class UsersResponse(BaseModel):
     data: List[User]
 
+
 class CountResponse(BaseModel):
     count: int
-    
+
+
 # WORKOUT SCHEMAS
 
 class WorkoutBase(BaseModel):
@@ -94,11 +110,14 @@ class WorkoutBase(BaseModel):
     avgHeartrate: Optional[float] = None
     date: str
 
+
 class Workout(BaseModel):
     workout: WorkoutBase
 
+
 class WorkoutIdQuery(BaseModel):
     id: Optional[int] = None
+
 
 class WorkoutsResponse(BaseModel):
     data: List[Workout]
