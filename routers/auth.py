@@ -49,6 +49,19 @@ async def logout(request: Request, response: Response, session_id: str = Header(
     pass
 
 @route(
+    request_method=router.post,
+    path='/get_permission_level',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(userId: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
     request_method=router.put,
     path='/reset_password',
     status_code=status.HTTP_200_OK,
