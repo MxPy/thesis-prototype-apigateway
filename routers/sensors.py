@@ -21,6 +21,18 @@ async def get_all(data: CreateSensorDataRequestModel, request: Request, response
 
 @route(
     request_method=router.get,
+    path='/get_graph',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.SENSORS_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def get_all(user_id:str, date:str, graph_type:str, request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
     path='/users',
     status_code=status.HTTP_200_OK,
     payload_key='',
