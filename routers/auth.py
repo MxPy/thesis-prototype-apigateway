@@ -48,18 +48,6 @@ async def login(username_password: UserLogin,
 async def logout(request: Request, response: Response, session_id: str = Header(...)):
     pass
 
-@route(
-    request_method=router.post,
-    path='/get_permission_level',
-    status_code=status.HTTP_200_OK,
-    payload_key='',
-    service_url=settings.AUTH_SERVICE_URL,
-    keep_header_in_body_after_forging=True,
-    authentication_required=True,
-    privileges_level=1,
-)
-async def logout(userId: str,request: Request, response: Response, session_id: str = Header(...)):
-    pass
 
 @route(
     request_method=router.put,
@@ -73,4 +61,119 @@ async def reset_password(username_password: ResetPassword,
                 request: Request, response: Response):
     pass
 
+@route(
+    request_method=router.post,
+    path='/cms/register-admin',
+    status_code=status.HTTP_200_OK,
+    payload_key='username_password',
+    service_url=settings.AUTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=2,
+)
+async def reset_password(username_password: User,
+                request: Request, response: Response, session_id: str = Header(...)):
+    pass
 
+@route(
+    request_method=router.get,
+    path='/cms/get_permission_level',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(userId: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.put,
+    path='/cms/user/update',
+    status_code=status.HTTP_200_OK,
+    payload_key='username_password',
+    service_url=settings.AUTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=2,
+)
+async def reset_password(username_password: User,
+                request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/cms/user/delete',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(userId: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
+    path='/cms/user/get',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(userId: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/cms/user/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
+    path='/cms/user/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.get,
+    path='/cms/session/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
+    request_method=router.delete,
+    path='/cms/session/all',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(request: Request, response: Response, session_id: str = Header(...)):
+    pass
