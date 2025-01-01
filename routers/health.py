@@ -53,7 +53,7 @@ async def get_all(userId: str, data: UpdateUserRequest, request: Request, respon
 
 
 @route(
-    request_method=router.put,
+    request_method=router.get,
     path='/users',
     status_code=status.HTTP_200_OK,
     payload_key='data',
@@ -61,7 +61,7 @@ async def get_all(userId: str, data: UpdateUserRequest, request: Request, respon
     authentication_required=True,
     privileges_level=1,
 )
-async def get_all(userId: str, data: UpdateUserRequest, request: Request, response: Response,
+async def get_all(userId: str, request: Request, response: Response,
                   session_id: str = Header(...)):
     pass
 
@@ -166,6 +166,25 @@ async def get_workouts(
         session_id: str = Header(...),
         id: Optional[int] = Query(None, description="Optional workout ID")
 ):
+    """
+    If id is provided, returns a specific workout.
+    If id is not provided, returns all workouts.
+    """
+    pass
+
+@route(
+    request_method=router.get,
+    path='/workouts/count',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.HEALTH_SERVICE_URL,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def get_workouts(
+        request: Request,
+        response: Response,
+        session_id: str = Header(...)):
     """
     If id is provided, returns a specific workout.
     If id is not provided, returns all workouts.
