@@ -127,6 +127,19 @@ async def logout(userId: str,request: Request, response: Response, session_id: s
     pass
 
 @route(
+    request_method=router.get,
+    path='/cms/user/get-u',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=1,
+)
+async def logout(username: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+@route(
     request_method=router.delete,
     path='/cms/user/all',
     status_code=status.HTTP_200_OK,
