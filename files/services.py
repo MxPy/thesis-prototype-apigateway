@@ -14,7 +14,7 @@ async def upload_file(
         bucket_name=bucket_name,
     )
     client.upload_file(file=file)
-    return {"path":f"http://{settings.MINIO_URI}/{bucket_name}/{file.filename}"}
+    return {"path":f"http://{settings.MINIO_PUBLIC_URL}/{bucket_name}/{file.filename}"}
 
 async def download_file(
     user_id: str, bucket_name: str, file_path: str
@@ -22,7 +22,7 @@ async def download_file(
     client = MinioClient(
         bucket_name=bucket_name,
     )
-    destination_folder = f"{settings.TEMP_FOLDER}/{user_id}"
+    destination_folder = f"{settings.TEMeP_FOLDER}/{user_id}"
     filename = file_path.split("/")[-1]
     client.download_file(
         source=file_path, destination=f"{destination_folder}/{filename}"

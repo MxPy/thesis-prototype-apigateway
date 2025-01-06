@@ -10,8 +10,9 @@ class Settings(BaseSettings):
     MINIO_PORT: int = 9000
     MINIO_SECURE: bool = False
     MINIO_URI: str = f'{MINIO_HOST}:{MINIO_PORT}'
-    ACCESS_KEY: str = "wpxborgQqMAxclnk9Hgt"
-    SECRET_KEY: str = "ZcOQG1tjb789ueRAbQhfB8B5HAGu662tymIawknb"
+    MINIO_PUBLIC_URL: str = f'localhost:{MINIO_PORT}'
+    ACCESS_KEY: str = "bnCFFeQLdQP5yljquLmR"
+    SECRET_KEY: str = "zfW6JYVW5wsjBMEpAw7cda0sGwU4wdJTz2K5Z98W"
 
 
 @lru_cache()

@@ -49,7 +49,8 @@ app.include_router(health.router)
 app.include_router(feed.router)
 app.include_router(comment_feed.router)
 app.include_router(websockets.router)
-app.include_router(forum.router)
+app.include_router(forum.routerRead)
+app.include_router(forum.routerWrite)
 app.include_router(other.filesRouter)
 
 

@@ -10,25 +10,6 @@ async def make_request(
     data: dict = None,
     headers: dict = None
 ):
-    """
-    Args:
-        url: is the url for one of the in-network services
-        method: is the lower version of one of the HTTP methods: GET, POST, PUT, DELETE # noqa
-        data: is the payload
-        headers: is the header to put additional headers into request
-
-    Returns:
-        service result coming / non-blocking http request (coroutine)
-        e.g:   {
-                    "id": 2,
-                    "username": "baranbartu",
-                    "email": "baran@baran.com",
-                    "full_name": "Baran Bartu Demirci",
-                    "user_type": "baran",
-                    "hashed_password": "***",
-                    "created_by": 1
-                }
-    """
     if not data:
         data = {}
 
@@ -38,5 +19,8 @@ async def make_request(
             async with request(url, json=data, headers=headers) as response:
                 if response.status == 404:
                     return ({}, response.status)
-                data = await response.json()
-                return (data, response.status)
+                try:
+                    data = await response.json()
+                    return (data, response.status)
+                except:
+                    return ("error", response.status)

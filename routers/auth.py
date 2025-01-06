@@ -5,10 +5,10 @@ from schemas.users import *
 
 
 
+
 router = APIRouter(
     prefix='/auth',
     tags=['auth'])
-
 
 @route(
     request_method=router.post,

@@ -15,7 +15,7 @@ activeUsersTemplate = Dict[str, List[str]]
 activeUsers: activeUsersTemplate = {}
 
 activeQueuesTemplate = List[str]
-activeQueues: activeQueuesTemplate = ["Test","HealthData", "SubData"]
+activeQueues: activeQueuesTemplate = ["Test", "HealthData", "Logs", "Moderation"]
 
 
 async def get_amqp_connection() -> aio_pika.abc.AbstractConnection:
