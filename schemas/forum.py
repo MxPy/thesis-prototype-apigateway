@@ -6,7 +6,7 @@ from fastapi import UploadFile, Form
 from files.utils import form_body
 
 class Post(BaseModel):
-    postId: str #backend
+    postId: int #backend
     userId: str
     username: str #backend
     title: str
