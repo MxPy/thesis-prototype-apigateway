@@ -88,7 +88,7 @@ async def get_all(userId: str, request: Request, response: Response, session_id:
     privileges_level=0,
 )
 async def get_all(request: Request, response: Response, userId: str, workoutId: Union[str, None] = None,
-                  search: Union[str, None] = None, session_id: str = Header(...)):
+                  search: Union[str, None] = None, page: Union[str, None] = None, limit: Union[str, None] = None, session_id: str = Header(...)):
     pass
 
 
