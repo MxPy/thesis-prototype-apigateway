@@ -108,7 +108,7 @@ async def get_all(userId: str, workoutId: int, request: Request, response: Respo
     request_method=router.put,
     path='/workouts',
     status_code=status.HTTP_200_OK,
-    payload_key='',
+    payload_key='data',
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
