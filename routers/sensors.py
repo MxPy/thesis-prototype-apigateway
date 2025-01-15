@@ -75,14 +75,14 @@ async def create_sensor_data(data: CreateSensorDataRequest, request: Request, re
 
 @route(
     request_method=router.get,
-    path='/all',
+    path='/all/info',
     status_code=status.HTTP_200_OK,
     payload_key='',
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=1,
 )
-async def get_all_sensor_data(request: Request, response: Response, page: str | None = None, limit: str | None = None, session_id: str = Header(...)):
+async def get_all_sensor_data(request: Request, response: Response, page: int | None = None, limit: int | None = None, session_id: str = Header(...)):
     pass
 
 @route(
