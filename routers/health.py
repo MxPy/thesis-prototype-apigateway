@@ -87,7 +87,7 @@ async def get_all(userId: str, request: Request, response: Response, session_id:
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(request: Request, response: Response, userId: str, workoutId: Union[str, None] = None,
+async def get_all(request: Request, response: Response, userId: str, workoutId: Union[int, None] = None,
                   search: Union[str, None] = None, page: Union[str, None] = None, limit: Union[str, None] = None, session_id: str = Header(...)):
     pass
 
@@ -101,7 +101,7 @@ async def get_all(request: Request, response: Response, userId: str, workoutId: 
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId: str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, workoutId: int, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
 @route(
@@ -113,7 +113,7 @@ async def get_all(userId: str, workoutId: str, request: Request, response: Respo
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId: str, workoutId: str, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(userId: str, workoutId: int, request: Request, response: Response, session_id: str = Header(...)):
     pass
 
 @route(
@@ -138,7 +138,7 @@ async def get_all(data: Workout, request: Request, response: Response, session_i
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(search: str, userId: str, workoutId: str, request: Request, response: Response,
+async def get_all(search: str, userId: str, workoutId: int, request: Request, response: Response,
                   session_id: str = Header(...)):
     pass
 
