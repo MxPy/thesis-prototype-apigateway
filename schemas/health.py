@@ -10,6 +10,7 @@ class User(BaseModel):
     age: int
     weight: float
     height: int
+    activity: Optional[float] = None
     bmr: Optional[int] = None
     tdee: Optional[int] = None
 
@@ -85,6 +86,7 @@ class User(BaseModel):
     age: int
     weight: float
     height: int
+    activity: Optional[float] = None
     bmr: Optional[int] = None
     tdee: Optional[int] = None
 
@@ -101,19 +103,29 @@ class CountResponse(BaseModel):
 # WORKOUT SCHEMAS
 
 class WorkoutBase(BaseModel):
-    # workoutId: Optional[int] = None
     userId: str
     workoutType: Optional[str] = None
     duration: Optional[int] = None
+    distance: Optional[float] = None
     caloriesBurned: Optional[float] = None
     avgSteps: Optional[float] = None
     avgHeartrate: Optional[float] = None
     date: str
 
-
 class Workout(BaseModel):
     workout: WorkoutBase
 
+class UpdateWorkout(BaseModel):
+    workoutType: Optional[str] = None
+    duration: Optional[int] = None
+    distance: Optional[float] = None
+    caloriesBurned: Optional[float] = None
+    avgSteps: Optional[float] = None
+    avgHeartrate: Optional[float] = None
+    date: str
+
+class UpdateWorkoutRequest(BaseModel):
+    workout: UpdateWorkout
 
 class WorkoutIdQuery(BaseModel):
     id: Optional[int] = None
