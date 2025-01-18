@@ -29,28 +29,6 @@ def route(
         privileges_level: int = 0,
         response_list: bool = False
 ):
-    """
-    Advanced wrapper for FastAPI router that acts as a gateway API.
-    Supports path parameters and forwards them to the underlying service.
-
-    Args:
-        request_method: Callable like (app.get, app.post etc.)
-        path: Path to bind (like '/api/users/{user_id}')
-        status_code: Expected HTTP status code
-        payload_key: Key for the payload parameter in the endpoint function
-        service_url: Base URL of the target service
-        authentication_required: Whether authentication is required
-        post_processing_func: Extra processing after service returns
-        authentication_token_decoder: JWT token decoder
-        service_authorization_checker: Front authorization checks
-        service_header_generator: Header generator for inner services
-        response_model: Return type for API docs
-        response_list: Whether response is a list
-        privileges_level: Authentication level (0=user, 1=admin, 2=backend_admin)
-
-    Returns:
-        Wrapped endpoint result
-    """
 
     if response_model:
         response_model = import_function(response_model)
@@ -104,21 +82,16 @@ def route(
 
             scope = request.scope
             method = scope['method'].lower()
-            
-            # Get the actual request path from scope
             service_path = scope['path']
-
-            # Extract path parameters
             request_params = {}
             for param_name, param_value in kwargs.items():
                 if param_name != 'session_id' and param_name != payload_key:
                     request_params[param_name] = param_value
 
-            # Extract query parameters
             query_params = request.query_params
             if query_params:
                 query_string = '?' + str(query_params)
-                service_path += query_string
+                service_path += query_strin%g
 
             # Handle payload
             if method in ['post', 'put', 'patch']:

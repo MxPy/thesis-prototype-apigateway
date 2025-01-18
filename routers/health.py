@@ -52,18 +52,6 @@ async def get_all(userId: str, data: UpdateUserRequest, request: Request, respon
     pass
 
 
-@route(
-    request_method=router.put,
-    path='/users/bmr-tdee',
-    status_code=status.HTTP_200_OK,
-    payload_key='data',
-    service_url=settings.HEALTH_SERVICE_URL,
-    authentication_required=True,
-    privileges_level=0,
-)
-async def get_all(userId: str, data: BMRTDEE, request: Request, response: Response, session_id: str = Header(...)):
-    pass
-
 
 @route(
     request_method=router.get,
