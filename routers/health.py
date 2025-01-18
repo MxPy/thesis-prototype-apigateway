@@ -2,7 +2,7 @@ from fastapi import status, Request, Response, APIRouter, Header, Query
 from conf import settings
 from core import route
 from schemas.health import (
-    User, UpdateUserRequest, BMRTDEE, Workout, WorkoutBase
+    User, UpdateUserRequest, BMRTDEE, Workout, WorkoutBase, UpdateWorkoutRequest, UpdateWorkout
 )
 from typing import Optional, Union
 
@@ -96,12 +96,14 @@ async def get_all(userId: str, workoutId: int, request: Request, response: Respo
     request_method=router.put,
     path='/workouts',
     status_code=status.HTTP_200_OK,
-    payload_key='',
+    payload_key='data',
     service_url=settings.HEALTH_SERVICE_URL,
     authentication_required=True,
     privileges_level=0,
 )
-async def get_all(userId: str, workoutId: int, request: Request, response: Response, session_id: str = Header(...)):
+async def get_all(data: UpdateWorkoutRequest, request: Request, response: Response, session_id: str = Header(...), 
+                  userId: Union[str, None] = None, 
+                  workoutId: Union[int, None] = None, id: Union[int, None] = None):
     pass
 
 @route(
