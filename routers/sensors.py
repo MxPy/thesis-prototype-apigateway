@@ -142,7 +142,7 @@ async def count_data_by_user_id(userId: str, request: Request, response: Respons
     authentication_required=True,
     privileges_level=1,
 )
-async def get_data_by_user_id_sensor_id(userId: str, id: int, request: Request, response: Response, session_id: str = Header(...)):
+async def get_data_by_user_id_sensor_id(request: Request, response: Response, sensorId: int, userId: str | None = None, session_id: str = Header(...)):
     pass
 
 @route(
