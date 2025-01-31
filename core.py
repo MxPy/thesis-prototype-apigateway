@@ -91,7 +91,7 @@ def route(
             query_params = request.query_params
             if query_params:
                 query_string = '?' + str(query_params)
-                service_path += query_strin%g
+                service_path += query_string
 
             # Handle payload
             if method in ['post', 'put', 'patch']:
