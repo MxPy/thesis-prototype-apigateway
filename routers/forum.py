@@ -118,28 +118,28 @@ async def file_upload(post: forum.PostOuterRequest = Depends(), session_id: str 
 async def avatar_upload(
     user_id: str = Form(...), 
     avatar: Optional[UploadFile] = File(None), 
-    # session_id: str = Header(...)
+    session_id: str = Header(...)
 ):
     # Validate token
     exc = None
-    # try:
-    #     token_payload = await decode_access_token(session_id)
-    #     logger.info(token_payload["valid"])
-    #     if not token_payload["valid"]:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_401_UNAUTHORIZED,
-    #             detail=token_payload["detail"],
-    #             headers={'WWW-Authenticate': 'Bearer'},
-    #         )
-    # except Exception as e:
-    #     exc = str(e)
-    # finally:
-    #     if exc:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_401_UNAUTHORIZED,
-    #             detail=exc,
-    #             headers={'WWW-Authenticate': 'Bearer'},
-    #         )
+    try:
+        token_payload = await decode_access_token(session_id)
+        logger.info(token_payload["valid"])
+        if not token_payload["valid"]:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=token_payload["detail"],
+                headers={'WWW-Authenticate': 'Bearer'},
+            )
+    except Exception as e:
+        exc = str(e)
+    finally:
+        if exc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=exc,
+                headers={'WWW-Authenticate': 'Bearer'},
+            )
     
     # Validate avatar presence
     if not avatar or not avatar.filename:
