@@ -6,10 +6,10 @@ from typing import Optional
 
 class User(BaseModel):
     userId: str
-    gender: str
-    age: int
-    weight: float
-    height: int
+    gender: Optional[str] = None
+    age: Optional[int] = None
+    weight: Optional[float] = None
+    height: Optional[int] = None
     activity: Optional[float] = None
     bmr: Optional[int] = None
     tdee: Optional[int] = None
