@@ -1,5 +1,5 @@
 from fastapi import WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Depends
-from auth import decode_access_token, decdecode_access_token_admin
+from auth import decode_access_token, decode_access_token_admin
 from websocket.connectionManager import manager
 from q.queueManager import add_user_to_active_users, remove_user_from_active_users, activeUsers, publish_message, get_channel
 import logging
@@ -53,7 +53,7 @@ async def user_connect(user_id: str, websocket: WebSocket):
         await websocket.close(code=4001)
         return
 
-    auth = await decdecode_access_token_admin(session_id)
+    auth = await decode_access_token_admin(session_id)
     if not auth.get("valid"):
         await websocket.close(code=403)
         return
