@@ -111,13 +111,15 @@ async def file_upload(post: forum.PostOuterRequest = Depends(), session_id: str 
 
     return response_data
 
+
+
 @routerWrite.post(
     "/user-avatar", 
     status_code=status.HTTP_201_CREATED
 )
 async def avatar_upload(
     user_id: str = Form(...), 
-    avatar: Optional[UploadFile] = File(None), 
+    avatar: UploadFile = File(...), 
     session_id: str = Header(...)
 ):
     # Validate token
@@ -163,34 +165,28 @@ async def avatar_upload(
             file=avatar
         )
         
-        # if not uploaded:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         detail="Failed to upload avatar"
-        #     )
+        if not uploaded:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to upload avatar"
+            )
         
-        # # Przygotowanie danych do wysłania do serwisu użytkowników
-        # request_data = {
-        #     "userId": user_id,
-        #     "avatarLink": uploaded.get("path")
-        # }
         
-        # # Wysłanie linku do avatara do serwisu użytkowników
-        # url = settings.AUTH_SERVICE_URL + "/update-avatar"
-        # service_headers = {}
+        # Wysłanie linku do avatara do serwisu użytkowników
+        url = settings.AUTH_SERVICE_URL + f"/auth/avatar?user_id={user_id}&avatar_link={uploaded.get('path')}"
+        service_headers = {}
+        print(url)
+        response_data, status_code_from_service = await make_request(
+            url=url,
+            method="post",
+            headers=service_headers,
+        )
         
-        # response_data, status_code_from_service = await make_request(
-        #     url=url,
-        #     method="post",
-        #     data=request_data,
-        #     headers=service_headers,
-        # )
-        
-        # if status_code_from_service not in (200, 201):
-        #     raise HTTPException(
-        #         status_code=status_code_from_service,
-        #         detail="Failed to update user avatar"
-        #     )
+        if status_code_from_service not in (200, 201):
+            raise HTTPException(
+                status_code=status_code_from_service,
+                detail="Failed to update user avatar"
+            )
         
         return {"avatarLink": uploaded.get("path")}
     

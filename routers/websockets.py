@@ -39,20 +39,3 @@ async def user_connect(user_id: str, websocket: WebSocket):
         await manager.disconnect(session_id, websocket)
         await remove_user_from_active_users(user_id, session_id)
 
-@router.post('/test')
-async def create_user(user_id: str):
-    for session in activeUsers.get(user_id):
-        await manager.broadcast(session, {"chuj":"chuj"})
-    
-    return {"chuj": "ci w dupe"}
-
-@router.post('/test2')
-async def create_user(
-    type: int = 0,
-    destination: str = "Test",
-    body: str = "test",
-    channel: aio_pika.abc.AbstractChannel = Depends(get_channel)):
-    await publish_message(channel=channel, type=type, target=destination, data=body)
-    
-    return {"chuj": "ci w dupe2"}
-

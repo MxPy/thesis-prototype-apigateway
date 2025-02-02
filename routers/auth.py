@@ -74,6 +74,21 @@ async def reset_password(username_password: User,
                 request: Request, response: Response, session_id: str = Header(...)):
     pass
 
+
+@route(
+    request_method=router.get,
+    path='/avatar',
+    status_code=status.HTTP_200_OK,
+    payload_key='',
+    service_url=settings.AUTH_SERVICE_URL,
+    keep_header_in_body_after_forging=True,
+    authentication_required=True,
+    privileges_level=0,
+)
+async def logout(user_id: str,request: Request, response: Response, session_id: str = Header(...)):
+    pass
+
+
 @route(
     request_method=router.get,
     path='/cms/get_permission_level',
