@@ -204,6 +204,7 @@ async def get_workouts(
         request: Request,
         response: Response,
         session_id: str = Header(...),
+        userId: Optional[int] = Query(None, description="Optional workout ID"),
         id: Optional[int] = Query(None, description="Optional workout ID")
 ):
     """
