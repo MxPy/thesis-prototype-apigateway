@@ -226,7 +226,8 @@ async def delete_workouts(
         request: Request,
         response: Response,
         session_id: str = Header(...),
-        id: Optional[int] = Query(None, description="Optional workout ID")
+        id: Optional[int] = Query(None, description="Optional workout ID"),
+        userId: Optional[str] = Query(None, description="Optional user ID")
 ):
     """
     If id is provided, deletes a specific workout.
@@ -263,20 +264,6 @@ async def get_all_users(userId: str, request: Request, response: Response, sessi
 )
 async def get_all_users(request: Request, response: Response, session_id: str = Header(...)):
     pass
-
-
-@route(
-    request_method=router.delete,
-    path='/users/all',
-    status_code=status.HTTP_200_OK,
-    payload_key='',
-    service_url=settings.HEALTH_SERVICE_URL,
-    authentication_required=True,
-    privileges_level=1,
-)
-async def delete_all_users(request: Request, response: Response, session_id: str = Header(...)):
-    pass
-
 
 @route(
     request_method=router.get,
